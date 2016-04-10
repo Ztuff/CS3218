@@ -9,8 +9,6 @@ import android.view.SurfaceView;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class CamcorderView extends SurfaceView implements
         SurfaceHolder.Callback {
@@ -46,7 +44,8 @@ public class CamcorderView extends SurfaceView implements
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
 
-        File outputFile = new File(outputDir, new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(new Date()) + ".mp4");
+//        File outputFile = new File(outputDir, new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(new Date()) + ".mp4");
+        File outputFile = new File(outputDir, "fileName.mp4");
         mRecorder.setOutputFile(outputFile.getAbsolutePath());
 
         try {
