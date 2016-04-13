@@ -11,13 +11,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class CalibrateActivity extends Activity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibrate);
     }
     int error = 0;
+    public static long delay;
 
     public void btn_video_compass(View view) {
         float averageIntensity = 256;
@@ -50,7 +50,7 @@ public class CalibrateActivity extends Activity {
         Frame eventFrame = MainActivity.getCompassHistory().get(compassEventIndex);
         long eventTime = eventFrame.getTime();
         time = formatTimeMs(eventFrame.getTime());
-        long delay = eventTime - i;
+        delay = eventTime - i;
         Toast.makeText(getApplicationContext(), "Calibration event found in compass history at " + time + ". Delay: " + delay + "ms", Toast.LENGTH_LONG).show();
     }
 

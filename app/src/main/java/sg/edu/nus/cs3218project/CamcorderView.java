@@ -19,6 +19,7 @@ public class CamcorderView extends SurfaceView implements
     private MediaRecorder mRecorder;
     public static File outputDir = new File("/sdcard/CS3218/Videos/");
     public static String outputFilename = "fileName.mp4";
+    public static long startTime;
     boolean initialized = false;
 
     public CamcorderView(Context context) {
@@ -56,6 +57,7 @@ public class CamcorderView extends SurfaceView implements
         } catch (IOException e) {
             Log.e("IOException", e.toString());
         }
+        startTime = System.currentTimeMillis();
         mRecorder.start();
     }
 
