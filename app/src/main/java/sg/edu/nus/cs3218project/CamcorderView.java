@@ -17,7 +17,8 @@ public class CamcorderView extends SurfaceView implements
 
     private Camera mCamera;
     private MediaRecorder mRecorder;
-    private File outputDir = new File("/sdcard/CS3218/Videos/");
+    public static File outputDir = new File("/sdcard/CS3218/Videos/");
+    public static String outputFilename = "fileName.mp4";
     boolean initialized = false;
 
     public CamcorderView(Context context) {
@@ -45,7 +46,7 @@ public class CamcorderView extends SurfaceView implements
         mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
 
 //        File outputFile = new File(outputDir, new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(new Date()) + ".mp4");
-        File outputFile = new File(outputDir, "fileName.mp4");
+        File outputFile = new File(outputDir, outputFilename);
         mRecorder.setOutputFile(outputFile.getAbsolutePath());
 
         try {

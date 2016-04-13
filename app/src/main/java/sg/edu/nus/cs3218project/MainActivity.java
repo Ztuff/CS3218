@@ -23,4 +23,9 @@ public class MainActivity extends AppCompatActivity {
         i = new Intent(this, PlaybackActivity.class);
         startActivity(i);
     }
+
+    public void btn_calibrate(View view) {
+        i = new Intent(this, CalibrateActivity.class);
+        startActivity(i);
+    }
 }
