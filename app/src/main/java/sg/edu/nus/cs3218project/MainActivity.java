@@ -29,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void btn_calibrate(View view) {
+        i = new Intent(this, CalibrateActivity.class);
+        startActivity(i);
+    }
+
     public static ArrayList<Frame> getCompassHistory(){
         return compassHistory;
     }

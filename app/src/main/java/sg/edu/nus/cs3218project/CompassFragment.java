@@ -140,7 +140,7 @@ public class CompassFragment extends Fragment implements SensorEventListener {
     private void setFrameInHistory(int azimuth, String direction){
 
         Calendar c = Calendar.getInstance();
-        long time = System.currentTimeMillis();
+        long time = System.currentTimeMillis() - CamcorderView.startTime;
         Frame frame = new Frame(direction, azimuth, time);
         compassHistory.add(frame);
 
