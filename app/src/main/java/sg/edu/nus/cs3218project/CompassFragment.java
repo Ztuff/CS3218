@@ -116,17 +116,22 @@ public class CompassFragment extends Fragment implements SensorEventListener {
                 azimuth = (int) Math.round(Math.toDegrees(orientation[0]));
                 direction = getDirection((float)(azimuth));
 
-                setFrameInHistory(azimuth, direction);
+                if(((RecordFragmentActivity)getActivity()).getRecording()){
+                    setFrameInHistory(azimuth, direction);
+                    if(frames%100 == 0){
+                        System.out.println(compassHistory.get(frames).getDegree() + "     " + compassHistory.get(frames).getDirection()
+                                + "    " + compassHistory.get(frames).getTime());
+                    }
+
+                    frames++;
+
+                }
+                else{
+                    ((RecordFragmentActivity)getActivity()).setCompassHistory(compassHistory);
+                }
 
                 azimuthView.setText(Integer.toString(azimuth));
                 directionView.setText(direction);
-
-                if(frames%100 == 0){
-                    System.out.println(compassHistory.get(frames).getDegree() + "     " + compassHistory.get(frames).getDirection()
-                                            + "    " + compassHistory.get(frames).getTime());
-                }
-
-                frames++;
 
             }
         }

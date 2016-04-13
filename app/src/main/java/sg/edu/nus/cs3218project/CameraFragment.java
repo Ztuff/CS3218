@@ -16,7 +16,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CameraActivity extends Fragment implements View.OnClickListener{
+public class CameraFragment extends Fragment implements View.OnClickListener{
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -91,9 +91,12 @@ public class CameraActivity extends Fragment implements View.OnClickListener{
         if(recording) {
             ((TextView) getView().findViewById(R.id.button_capture)).setText(R.string.start);
             mPreview.stop();
+            ((RecordFragmentActivity)getActivity()).setRecording(false);
         } else {
             ((TextView)getView().findViewById(R.id.button_capture)).setText(R.string.stop);
             mPreview.start();
+            ((RecordFragmentActivity)getActivity()).setRecording(true);
+
         }
         recording = !recording;
     }

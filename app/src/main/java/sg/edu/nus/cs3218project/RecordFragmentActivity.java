@@ -2,8 +2,11 @@ package sg.edu.nus.cs3218project;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+
+import java.util.ArrayList;
 
 
 /**
@@ -12,6 +15,9 @@ import android.support.v4.app.FragmentActivity;
 public class RecordFragmentActivity extends FragmentActivity {
     FragmentManager fragmentManager = getFragmentManager();
     FragmentTransaction fragmentTransaction;
+    boolean recording;
+    ArrayList<Frame> compassHistory;
+
 
     @Override
     public FragmentManager getFragmentManager() {
@@ -23,8 +29,9 @@ public class RecordFragmentActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recordfragment);
 
+        recording = false;
 
-        CameraActivity textFragment = new CameraActivity();
+        CameraFragment textFragment = new CameraFragment();
         fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.add(R.id.video, textFragment);
@@ -39,6 +46,31 @@ public class RecordFragmentActivity extends FragmentActivity {
         fragmentTransaction.commit();
 
 
+    }
 
+    public void setCompassHistory(ArrayList<Frame> compassHistory){
+        this.compassHistory = compassHistory;
+    }
+
+    public ArrayList<Frame> getCompassHistory(){
+       // if(compassHistory == null){
+        //    return null;
+        //}
+        Intent intent= getIntent();
+        Bundle b = new Bundle();
+        b.putParcelableArrayList("myarraylist", compassHistory);
+        intent.putExtras(b);
+        setResult(RESULT_OK, intent);
+        finish();
+
+        return compassHistory;
+    }
+
+    public void setRecording(boolean recording){
+        this.recording = recording;
+    }
+
+    public boolean getRecording(){
+        return recording;
     }
 }

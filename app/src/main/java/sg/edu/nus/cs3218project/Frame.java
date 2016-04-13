@@ -1,9 +1,12 @@
 package sg.edu.nus.cs3218project;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Reem on 2016-04-12.
  */
-public class Frame {
+public class Frame implements Parcelable{
 
     private String direction;
     private int degree;
@@ -16,6 +19,18 @@ public class Frame {
         this.degree = degree;
         this.time = time;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(direction);
+        dest.writeInt(degree);
+        dest.writeLong(time);
+    }
+
 
     public void setDirection(String direction) {
         this.direction = direction;
