@@ -1,6 +1,5 @@
 package sg.edu.nus.cs3218project;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn_record(View view) {
-        i = new Intent(this, CameraActivity.class);
+        i = new Intent(this, RecordFragmentActivity.class);
         startActivity(i);
     }
 

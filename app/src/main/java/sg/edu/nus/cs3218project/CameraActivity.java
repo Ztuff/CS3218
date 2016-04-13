@@ -1,11 +1,14 @@
 package sg.edu.nus.cs3218project;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -13,7 +16,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CameraActivity extends Activity {
+public class CameraActivity extends Fragment implements View.OnClickListener{
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -22,14 +25,27 @@ public class CameraActivity extends Activity {
     private boolean recording = false;
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        /***getContext() requires api 23*/
+        mPreview = new CamcorderView(getActivity());
+        FrameLayout preview = (FrameLayout)getView().findViewById(R.id.camcorder_view);
+        preview.addView(mPreview);
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view =  inflater.inflate(R.layout.activity_camera, container, false);
+        // Create our Preview view and set it as the content of our activity.
+        Button upButton = (Button) view.findViewById(R.id.button_capture);
+        upButton.setOnClickListener(this);
+
+        return view;
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
-
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CamcorderView(this);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camcorder_view);
-        preview.addView(mPreview);
     }
 
     /** Create a file Uri for saving an image or video */
@@ -71,12 +87,12 @@ public class CameraActivity extends Activity {
         return mediaFile;
     }
 
-    public void btn_startStop(View view) {
+    public void onClick(View view) {
         if(recording) {
-            ((TextView)findViewById(R.id.button_capture)).setText(R.string.start);
+            ((TextView) getView().findViewById(R.id.button_capture)).setText(R.string.start);
             mPreview.stop();
         } else {
-            ((TextView)findViewById(R.id.button_capture)).setText(R.string.stop);
+            ((TextView)getView().findViewById(R.id.button_capture)).setText(R.string.stop);
             mPreview.start();
         }
         recording = !recording;
