@@ -9,6 +9,8 @@ public class PlaybackFragmentActivity extends FragmentActivity {
 
     FragmentManager fragmentManager = getFragmentManager();
     FragmentTransaction fragmentTransaction;
+    PlaybackFragment playbackFragment;
+    CompassPlaybackFragment compassPlaybackFragment;
     boolean playing;
     long startTime;
 
@@ -25,16 +27,17 @@ public class PlaybackFragmentActivity extends FragmentActivity {
 
 
         playing = false;
+        startTime = 0;
 
 
-        PlaybackFragment playbackFragment = new PlaybackFragment();
+        playbackFragment = new PlaybackFragment();
         fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.add(R.id.video, playbackFragment);
         fragmentTransaction.commit();
 
 
-        CompassPlaybackFragment compassPlaybackFragment = new CompassPlaybackFragment();
+        compassPlaybackFragment = new CompassPlaybackFragment();
         fragmentTransaction = fragmentManager.beginTransaction();
 
 
@@ -44,13 +47,10 @@ public class PlaybackFragmentActivity extends FragmentActivity {
 
     }
 
-    public void setPlaying(boolean playing){
-        this.playing = playing;
+    public void startPlaying(){
+        compassPlaybackFragment.printToScreen();
     }
 
-    public boolean getPlaying(){
-        return playing;
-    }
 
     public void setStartTime(long startTime){
         this.startTime = startTime;

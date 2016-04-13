@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static ArrayList<Frame> getCompassHistory(){
-        return getCompassHistory();
+        return compassHistory;
     }
 
     public static void setCompassHistory(ArrayList<Frame> newCompassHistory){
