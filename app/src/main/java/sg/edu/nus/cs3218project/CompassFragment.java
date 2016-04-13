@@ -127,7 +127,7 @@ public class CompassFragment extends Fragment implements SensorEventListener {
 
                 }
                 else{
-                    ((RecordFragmentActivity)getActivity()).setCompassHistory(compassHistory);
+                    MainActivity.setCompassHistory(compassHistory);
                 }
 
                 azimuthView.setText(Integer.toString(azimuth));

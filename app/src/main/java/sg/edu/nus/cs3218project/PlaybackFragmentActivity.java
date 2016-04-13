@@ -5,15 +5,12 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import java.util.ArrayList;
-
 public class PlaybackFragmentActivity extends FragmentActivity {
 
     FragmentManager fragmentManager = getFragmentManager();
     FragmentTransaction fragmentTransaction;
     boolean playing;
     long startTime;
-    ArrayList<Frame> compassHistory;
 
 
     @Override
@@ -28,7 +25,6 @@ public class PlaybackFragmentActivity extends FragmentActivity {
 
 
         playing = false;
-        compassHistory = getIntent().getParcelableArrayListExtra("mylist");
 
 
         PlaybackFragment playbackFragment = new PlaybackFragment();
@@ -46,10 +42,6 @@ public class PlaybackFragmentActivity extends FragmentActivity {
         fragmentTransaction.commit();
 
 
-    }
-
-    public ArrayList<Frame> getCompassHistory(){
-        return compassHistory;
     }
 
     public void setPlaying(boolean playing){
