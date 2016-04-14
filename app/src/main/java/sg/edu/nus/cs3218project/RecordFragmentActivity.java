@@ -40,12 +40,6 @@ public class RecordFragmentActivity extends FragmentActivity {
 
         fragmentTransaction.add(R.id.compass, compassFragment);
         fragmentTransaction.commit();
-
-        AudioRecordFragment audioRecordFragment = new AudioRecordFragment();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.audio, audioRecordFragment);
-        fragmentTransaction.commit();
-
     }
 
     public void setRecording(boolean recording){

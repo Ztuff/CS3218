@@ -63,7 +63,7 @@ public class CompassPlaybackFragment extends Fragment {
 
 
             //System.out.println("Start time " + startTime + " System time " + System.currentTimeMillis() + "    History Time  " + (currentFrame.getTime() + timeDifference) + "   original Time  " + frameTime +  "    Degree " + degree);
-            long timeDelay = frameTime - CalibrateActivity.delay;
+            long timeDelay = frameTime - CalibrateActivity.compassDelay;
             //System.out.println("Waiting: " + timeDelay);
             final Runnable setTextRunnable = new Runnable() {
                 @Override

@@ -22,6 +22,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
     public static final int MEDIA_TYPE_VIDEO = 2;
 
     private CamcorderView mPreview;
+    private RecordAudio rec;
     private boolean recording = false;
 
     @Override
@@ -31,6 +32,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
         mPreview = new CamcorderView(getActivity());
         FrameLayout preview = (FrameLayout)getView().findViewById(R.id.camcorder_view);
         preview.addView(mPreview);
+        rec = new RecordAudio();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,10 +93,12 @@ public class CameraFragment extends Fragment implements View.OnClickListener{
         if(recording) {
             ((TextView) getView().findViewById(R.id.button_capture)).setText(R.string.start);
             mPreview.stop();
+            rec.stop();
             ((RecordFragmentActivity)getActivity()).setRecording(false);
         } else {
             ((TextView)getView().findViewById(R.id.button_capture)).setText(R.string.stop);
             mPreview.start();
+            rec.start();
             ((RecordFragmentActivity)getActivity()).setRecording(true);
 
         }
