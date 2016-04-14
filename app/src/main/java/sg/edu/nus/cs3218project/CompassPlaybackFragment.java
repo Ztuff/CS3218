@@ -53,38 +53,44 @@ public class CompassPlaybackFragment extends Fragment {
 
         Calendar c = Calendar.getInstance();
         int i = 0;
-        long timeDifference = startTime - compassHistory.get(0).getTime();
+        //the time when the video started recording, plus the difference between now and then, minus the times of the first frame
+
+        long timeDifference = startTime + (System.currentTimeMillis() - startTime) - compassHistory.get(0).getTime() + CalibrateActivity.delay;
+
         while(i != compassHistory.size()){
             Frame currentFrame = compassHistory.get(i);
             long frameTime = currentFrame.getTime();
-            System.out.println("System time " + System.currentTimeMillis() + "    History Time" + (currentFrame.getTime() + timeDifference));
-
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
+            final int degree = currentFrame.getDegree();
+            final String direction = currentFrame.getDirection();
+            System.out.println("Start time " + startTime + " System time " + System.currentTimeMillis() + "    History Time" + (currentFrame.getTime() + timeDifference));
+            long timeDelay = frameTime + timeDifference - System.currentTimeMillis();
+            System.out.println("Waiting: " + timeDelay);
+            final Runnable setTextRunnable = new Runnable() {
+                @Override
                 public void run() {
-                    azimuthView.setText(Long.toString(startTime));
-                   // directionView.setText(currentFrame.getDirection());
-                   }
-            }, (startTime + frameTime + timeDifference));
+                    azimuthView.setText(Integer.toString(degree));
+                    directionView.setText(direction);
+                }
+            };
 
-            i++;
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    getActivity().runOnUiThread(setTextRunnable);
+                }
+            };
+            Timer timer = new Timer();
 
+            if(timeDelay >= 0) {
+                timer.schedule(timerTask, timeDelay);
 
-            //compassHistory.
-            /*if(System.currentTimeMillis() == (currentFrame.getTime() + timeDifference)){
-                System.out.println("i " + i);
-                i++;
-                azimuthView.setText(Integer.toString(currentFrame.getDegree()));
-                directionView.setText(currentFrame.getDirection());
             }
-            if(System.currentTimeMillis() > currentFrame.getTime()){
-                i++;
-
-            }*/
-
+            i++;
         }
-
         return 1;
     }
+
+
+
 
 }
