@@ -54,8 +54,8 @@ public class CalibrateActivity extends Activity {
         Frame eventFrame = MainActivity.getCompassHistory().get(compassEventIndex);
         long eventTime = eventFrame.getTime();
         time = formatTimeMs(eventFrame.getTime());
-        delay = eventTime - i;
-        Toast.makeText(getApplicationContext(), "Calibration event found in compass history at " + time + ". Delay: " + delay + "ms", Toast.LENGTH_LONG).show();
+        compassDelay = eventTime - i;
+        Toast.makeText(getApplicationContext(), "Calibration event found in compass history at " + time + ". Delay: " + compassDelay + "ms", Toast.LENGTH_LONG).show();
     }
 
     private String formatTimeMs(long i) {
