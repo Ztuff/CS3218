@@ -100,10 +100,7 @@ public class RecordAudio{
         for (int i = 0; i < samples.size(); i++){
             short[] sample = samples.get(i);
             for(int j = 0; j < bufferSize; j++){
-                if(sample[j] != 0)
                     recording[index++] = sample[j];
-                else
-                    break;
             }
         }
 
