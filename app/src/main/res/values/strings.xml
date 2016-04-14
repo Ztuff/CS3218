@@ -8,4 +8,5 @@
     <string name="play">Play</string>
     <string name="video_compass"><![CDATA[Video <-> Compass]]></string>
     <string name="calibrate">Calibrate</string>
+    <string name="video_audio"><![CDATA[Video <-> Audio]]></string>
 </resources>

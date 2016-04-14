@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CalibrateActivity extends Activity {
+    private int[] amplitudes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,12 +26,25 @@ public class CalibrateActivity extends Activity {
     int sensitivity = 20;
 
     public void btn_video_compass(View view) {
-        float averageIntensity = 256;
+        findVideoEvent();
+        int compassEventIndex = findCompassEvent();
+        if(compassEventIndex == -1){
+            Toast.makeText(getApplicationContext(), "Not calibrated: Please turn more than 10 degrees", Toast.LENGTH_LONG).show();
+        }
+        Frame eventFrame = MainActivity.getCompassHistory().get(compassEventIndex);
+        long eventTime = eventFrame.getTime();
+        String time = formatTimeMs(eventFrame.getTime());
+        compassDelay = eventTime - i;
+        Toast.makeText(getApplicationContext(), "Calibration event found in compass history at " + time + ". Delay: " + compassDelay + "ms", Toast.LENGTH_LONG).show();
+    }
+
+    private void findVideoEvent() {
+        float averageColorIntensity;
         i = -1000;
         do {
             i += 1000;
-            averageIntensity = averageIntensity();
-        } while (averageIntensity < 128);
+            averageColorIntensity = findAverageColorIntensity();
+        } while (averageColorIntensity < 128);
 
         if(error == 1) {
             Toast.makeText(getApplicationContext(), "Not calibrated: Please record a video before calibrating", Toast.LENGTH_LONG).show();
@@ -40,22 +55,13 @@ public class CalibrateActivity extends Activity {
             return;
         }
         if(i == 0) {
-            Toast.makeText(getApplicationContext(), "Not calibrated: Start of video must be dark, average color intensity of first frame measured as " + averageIntensity + "/255", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Not calibrated: Start of video must be dark, average color intensity of first frame measured as " + averageColorIntensity + "/255", Toast.LENGTH_LONG).show();
             return;
         }
 
         String time = formatTimeMs(i);
-        String avg = String.format("%.2f", averageIntensity);
+        String avg = String.format("%.2f", averageColorIntensity);
         Toast.makeText(getApplicationContext(), "Calibration event found in video at " + time + ", where an average color intensity of " + avg + "/255 was measured", Toast.LENGTH_LONG).show();
-        int compassEventIndex = compassEventFrame();
-        if(compassEventIndex == -1){
-            Toast.makeText(getApplicationContext(), "Not calibrated: Please turn more than 10 degrees", Toast.LENGTH_LONG).show();
-        }
-        Frame eventFrame = MainActivity.getCompassHistory().get(compassEventIndex);
-        long eventTime = eventFrame.getTime();
-        time = formatTimeMs(eventFrame.getTime());
-        compassDelay = eventTime - i;
-        Toast.makeText(getApplicationContext(), "Calibration event found in compass history at " + time + ". Delay: " + compassDelay + "ms", Toast.LENGTH_LONG).show();
     }
 
     private String formatTimeMs(long i) {
@@ -65,7 +71,7 @@ public class CalibrateActivity extends Activity {
         return String.format("%02d:%02d:%03d", m, s, ms);
     }
 
-    private int compassEventFrame() {
+    private int findCompassEvent() {
         // Pass by value, not by reference
         ArrayList<Frame> compassHistory = new ArrayList<>(MainActivity.getCompassHistory());
         int size = compassHistory.size();
@@ -118,7 +124,7 @@ public class CalibrateActivity extends Activity {
         return retVal;
     }
 
-    private float averageIntensity() {
+    private float findAverageColorIntensity() {
         Bitmap frame = getFrameAtTime(i);
         if(frame == null)
             return 256;
@@ -180,4 +186,32 @@ public class CalibrateActivity extends Activity {
             return null;
         }
     }
+
+ /*   public void btn_video_audio(View view) {
+        findVideoEvent();
+        int audioEventMs = findAudioEvent();
+    }
+
+    private int findAudioEvent() {
+        float amplitude;
+        int[] amplitudes = getAmplitudes();
+        i = -1000;
+        do {
+            i += 1000;
+            amplitude = findAverageColorIntensity();
+        } while (averageColorIntensity < 128);
+        return 0;
+    }
+
+    public int[] getAmplitudes() {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(CamcorderView.outputDir + "/" + RecordAudio.outputFilename);
+        }
+        catch(Exception e){
+            error = 1;
+            return null;
+        }
+        retriever.extractMetadata(MediaMetadataRetriever.)
+    }*/
 }
