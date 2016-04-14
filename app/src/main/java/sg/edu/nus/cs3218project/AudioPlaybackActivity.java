@@ -33,6 +33,7 @@ public class AudioPlaybackActivity extends Activity{
     }
 
     public void startPlaying() {
+        long audioDelay =  CalibrateActivity.audioDelay;
         mPlayer.start();
     }
 
