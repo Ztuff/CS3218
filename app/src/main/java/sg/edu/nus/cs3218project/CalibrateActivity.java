@@ -18,8 +18,9 @@ public class CalibrateActivity extends Activity {
         setContentView(R.layout.activity_calibrate);
     }
     int error = 0;
-    public static long delay;
+    public static long delay = 0;
     long i;
+    int sensitivity = 20;
 
     public void btn_video_compass(View view) {
         float averageIntensity = 256;
@@ -107,7 +108,7 @@ public class CalibrateActivity extends Activity {
         int retVal = -1;
         for (int j = 0; j < size; j++){
             int diff = Math.abs(degrees[j] - startDegree);
-            if (diff > 10) {
+            if (diff > sensitivity) {
                 retVal = j;
                 break;
             }

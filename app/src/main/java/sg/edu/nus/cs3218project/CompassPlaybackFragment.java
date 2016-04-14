@@ -55,7 +55,7 @@ public class CompassPlaybackFragment extends Fragment {
         int i = 0;
         //the time when the video started recording, plus the difference between now and then, minus the times of the first frame
 
-        long timeDifference = startTime + (System.currentTimeMillis() - startTime) - compassHistory.get(0).getTime() + CalibrateActivity.delay;
+        long timeDifference = startTime + (System.currentTimeMillis() - startTime) - compassHistory.get(0).getTime() - CalibrateActivity.delay;
 
         while(i != compassHistory.size()){
             Frame currentFrame = compassHistory.get(i);
