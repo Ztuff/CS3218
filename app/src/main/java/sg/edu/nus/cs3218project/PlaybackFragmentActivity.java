@@ -11,6 +11,7 @@ public class PlaybackFragmentActivity extends FragmentActivity {
     FragmentTransaction fragmentTransaction;
     PlaybackFragment playbackFragment;
     CompassPlaybackFragment compassPlaybackFragment;
+    AudioPlaybackActivity audioPlaybackActivity;
     boolean playing;
     long startTime;
 
@@ -44,11 +45,15 @@ public class PlaybackFragmentActivity extends FragmentActivity {
         fragmentTransaction.add(R.id.compass, compassPlaybackFragment);
         fragmentTransaction.commit();
 
+        audioPlaybackActivity = new AudioPlaybackActivity();
+        audioPlaybackActivity.initializePlayer();
+
 
     }
 
     public void startPlaying(){
         compassPlaybackFragment.printToScreen();
+        audioPlaybackActivity.startPlaying();
     }
 
 
