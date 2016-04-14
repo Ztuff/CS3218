@@ -187,31 +187,7 @@ public class CalibrateActivity extends Activity {
         }
     }
 
- /*   public void btn_video_audio(View view) {
+    public void btn_video_audio(View view) {
         findVideoEvent();
-        int audioEventMs = findAudioEvent();
     }
-
-    private int findAudioEvent() {
-        float amplitude;
-        int[] amplitudes = getAmplitudes();
-        i = -1000;
-        do {
-            i += 1000;
-            amplitude = findAverageColorIntensity();
-        } while (averageColorIntensity < 128);
-        return 0;
-    }
-
-    public int[] getAmplitudes() {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(CamcorderView.outputDir + "/" + RecordAudio.outputFilename);
-        }
-        catch(Exception e){
-            error = 1;
-            return null;
-        }
-        retriever.extractMetadata(MediaMetadataRetriever.)
-    }*/
 }
