@@ -23,7 +23,9 @@ public class RecordAudio{
     private long startTimeStamp;
     public static long endTimeStamp = 0;
     public boolean runFlag = false;
-    public static ArrayList<short[]> samples;
+    private ArrayList<short[]> samples = new ArrayList<>();
+    public static short[] recording;
+    public static short[] averages;
 
     public RecordAudio(){
 
@@ -50,13 +52,13 @@ public class RecordAudio{
         {
             public void run()
             {
-                boolean firstFlag = true;
+                /*boolean firstFlag = true;
                 int firstAmpSum = 0;
-                int lastAmpSum;
+                int lastAmpSum;*/
 
                 while (runFlag) {
                     audioRecord.read(buffer, 0, bufferSize);
-                    samples.add(buffer);
+                    samples.add(buffer.clone());
                     /*if(firstFlag){
                         for(int i = 0; i < bufferSize; i++){
                             firstAmpSum += Math.abs(buffer[i]);
@@ -93,5 +95,18 @@ public class RecordAudio{
         catch(InterruptedException e){};
         audioRecord.stop();
         audioRecord.release();
+
+        averages = new short[samples.size()];
+        long total = 0;
+
+        recording = new short[samples.size()*bufferSize];
+        for (int i = 0; i < samples.size(); i++){
+            total = 0;
+            for(int j = 0; j < bufferSize; j++){
+                recording[i*bufferSize + j] = (short)Math.abs(samples.get(i)[j]);
+                total += recording[i*bufferSize + j];
+            }
+            averages[i] = (short)(total / bufferSize);
+        }
     }
 }
