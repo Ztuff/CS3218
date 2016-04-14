@@ -76,11 +76,10 @@ public class CalibrateActivity extends Activity {
             else if(compassHistory.get(j).getDegree() > maxDegree)
                 maxDegree = compassHistory.get(j).getDegree();
         }
-        boolean cycleFlag = false;
+        
         // If jumps detected, add 360 to all negative numbers, to start the cycle half way through
         if(minDegree < -90 && maxDegree > 90)
         {
-            cycleFlag = true;
             for (int j = 0; j < size; j++) {
                 Frame frame = compassHistory.get(j);
                 if(frame.getDegree() < 0)
@@ -96,13 +95,7 @@ public class CalibrateActivity extends Activity {
             int deg4 = j + 1 >= size ? compassHistory.get(j).getDegree() : compassHistory.get(j + 1).getDegree();
             int deg5 = j + 2 >= size ? compassHistory.get(j).getDegree() : compassHistory.get(j + 2).getDegree();
             degrees[j] = (deg1 + deg2 + deg3 + deg4 + deg5)/5;
-            if(cycleFlag && degrees[j] <= 180)
-                compassHistory.set(j, new Frame(compassHistory.get(j).getDirection(), degrees[j], compassHistory.get(j).getTime()));
-            else
-                compassHistory.set(j, new Frame(compassHistory.get(j).getDirection(), degrees[j] - 360, compassHistory.get(j).getTime()));
-
         }
-        MainActivity.setCompassHistory(compassHistory);
 
         int[] first5 = new int[5], last5 = new int[5];
         for(int j = 0; j < first5.length; j++){
