@@ -189,5 +189,36 @@ public class CalibrateActivity extends Activity {
 
     public void btn_video_audio(View view) {
         findVideoEvent();
+        short[] recording = RecordAudio.recording;
+
+        ArrayList<Short> averages = new ArrayList<>();
+        int total = 0;
+        for(int j = 0; j < recording.length; j++){
+            if(j%160 == 0 && j > 0){
+                averages.add((short)(total / 160));
+                total = 0;
+            }
+            total += Math.abs(recording[j]);
+        }
+
+        int first5 = 0;
+        for(int j = 0; j < 5; j++){
+            first5 += averages.get(j);
+        }
+        int startAmp = first5/5;
+        int ms = -1;
+        for (int j = 6; j < averages.size(); j++){
+            if(averages.get(j) > startAmp * 10){
+                ms = j * 100;
+                break;
+            }
+        }
+        if(ms == -1){
+            Toast.makeText(getApplicationContext(), "Not calibrated: No loud noise detected", Toast.LENGTH_LONG).show();
+        }
+        else{
+            audioDelay = ms - i;
+            Toast.makeText(getApplicationContext(), "Calibration event found in audio at " + ms + "ms, where an amplitude of " + averages.get(ms/100) + " was measured", Toast.LENGTH_LONG).show();
+        }
     }
 }

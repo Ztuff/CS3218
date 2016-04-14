@@ -25,7 +25,6 @@ public class RecordAudio{
     public boolean runFlag = false;
     private ArrayList<short[]> samples = new ArrayList<>();
     public static short[] recording;
-    public static short[] averages;
 
     public RecordAudio(){
 
@@ -96,17 +95,29 @@ public class RecordAudio{
         audioRecord.stop();
         audioRecord.release();
 
-        averages = new short[samples.size()];
-        long total = 0;
-
         recording = new short[samples.size()*bufferSize];
+        int index = 0;
         for (int i = 0; i < samples.size(); i++){
-            total = 0;
+            short[] sample = samples.get(i);
             for(int j = 0; j < bufferSize; j++){
-                recording[i*bufferSize + j] = (short)Math.abs(samples.get(i)[j]);
-                total += recording[i*bufferSize + j];
+                if(sample[j] != 0)
+                    recording[index++] = sample[j];
+                else
+                    break;
             }
-            averages[i] = (short)(total / bufferSize);
         }
+
+        int recordingSize = 0;
+        for(int i = 0; i < recording.length; i++){
+            if(recording[i] != 0)
+                recordingSize++;
+        }
+        short[] recordingStripped = new short[recordingSize];
+        index = 0;
+        for(int i = 0; i < recording.length; i++){
+            if(recording[i] != 0)
+                recordingStripped[index++] = recording[i];
+        }
+        recording = recordingStripped;
     }
 }
