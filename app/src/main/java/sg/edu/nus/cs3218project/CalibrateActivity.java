@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CalibrateActivity extends Activity {
     @Override
@@ -46,7 +47,7 @@ public class CalibrateActivity extends Activity {
         Toast.makeText(getApplicationContext(), "Calibration event found in video at " + time + ", where an average color intensity of " + avg + "/255 was measured", Toast.LENGTH_LONG).show();
         int compassEventIndex = compassEventFrame();
         if(compassEventIndex == -1){
-            Toast.makeText(getApplicationContext(), "Not calibrated: Please turn less than 180 degrees", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Not calibrated: Please turn more than 10 degrees", Toast.LENGTH_LONG).show();
         }
         Frame eventFrame = MainActivity.getCompassHistory().get(compassEventIndex);
         long eventTime = eventFrame.getTime();
@@ -66,51 +67,52 @@ public class CalibrateActivity extends Activity {
         // Pass by value, not by reference
         ArrayList<Frame> compassHistory = new ArrayList<>(MainActivity.getCompassHistory());
         int size = compassHistory.size();
-       int minDegree = 180, maxDegree = -180, startDegree = compassHistory.get(0).getDegree();
+        int minDegree = 180, maxDegree = -180;
         // Check for jumps between -180 and 180
-        for (int i = 0; i < size; i++){
-            if(compassHistory.get(i).getDegree() < minDegree)
-                minDegree = compassHistory.get(i).getDegree();
-            else if(compassHistory.get(i).getDegree() > minDegree)
-                minDegree = compassHistory.get(i).getDegree();
+        for (int j = 0; j < size; j++){
+            if(compassHistory.get(j).getDegree() < minDegree)
+                minDegree = compassHistory.get(j).getDegree();
+            else if(compassHistory.get(j).getDegree() > minDegree)
+                minDegree = compassHistory.get(j).getDegree();
         }
         // If jumps detected, add 360 to all negative numbers, to start the cycle half way through
         if(minDegree < -90 && maxDegree > 90)
         {
-            for (int i = 0; i < size; i++) {
-                Frame frame = compassHistory.get(i);
+            for (int j = 0; j < size; j++) {
+                Frame frame = compassHistory.get(j);
                 if(frame.getDegree() < 0)
-                    compassHistory.set(i, new Frame(frame.getDirection(), frame.getDegree() + 360, frame.getTime()));
+                    compassHistory.set(j, new Frame(frame.getDirection(), frame.getDegree() + 360, frame.getTime()));
             }
         }
         // Smooth out the results by making them an average of the closest five samples
         int[] degrees = new int[size];
-        for (int i = 0; i < size; i++){
-            int deg1 = i - 2 < 0 ? compassHistory.get(i).getDegree() : compassHistory.get(i - 2).getDegree();
-            int deg2 = i - 1 < 0 ? compassHistory.get(i).getDegree() : compassHistory.get(i - 1).getDegree();
-            int deg3 = compassHistory.get(i).getDegree();
-            int deg4 = i + 1 >= size ? compassHistory.get(i).getDegree() : compassHistory.get(i + 1).getDegree();
-            int deg5 = i + 2 >= size ? compassHistory.get(i).getDegree() : compassHistory.get(i + 2).getDegree();
-            degrees[i] = (deg1 + deg2 + deg3 + deg4 + deg5)/5;
+        for (int j = 0; j < size; j++){
+            int deg1 = j - 2 < 0 ? compassHistory.get(j).getDegree() : compassHistory.get(j - 2).getDegree();
+            int deg2 = j - 1 < 0 ? compassHistory.get(j).getDegree() : compassHistory.get(j - 1).getDegree();
+            int deg3 = compassHistory.get(j).getDegree();
+            int deg4 = j + 1 >= size ? compassHistory.get(j).getDegree() : compassHistory.get(j + 1).getDegree();
+            int deg5 = j + 2 >= size ? compassHistory.get(j).getDegree() : compassHistory.get(j + 2).getDegree();
+            degrees[j] = (deg1 + deg2 + deg3 + deg4 + deg5)/5;
         }
 
-        // Get degree extremes again
-        minDegree = 360;
-        maxDegree = -180;
-        startDegree = degrees[0];
-        for (int i = 0; i < size; i++){
-            if (degrees[i] < minDegree)
-                minDegree = degrees[i];
-            else if(degrees[i] > maxDegree)
-                maxDegree = degrees[i];
+        int[] first5 = new int[5], last5 = new int[5];
+        for(int j = 0; j < first5.length; j++){
+            first5[j] = degrees[j];
+            last5[last5.length - 1 - j] = degrees[size - 1 - j];
         }
+        Arrays.sort(first5);
+        Arrays.sort(last5);
+        int startDegree = first5[2];
 
-        int diff = maxDegree - minDegree;
-        for (int i = 0; i < size; i++){
-            if (Math.abs(degrees[i] - startDegree) > diff / 2)
-                return i;
+        int retVal = -1;
+        for (int j = 0; j < size; j++){
+            int diff = Math.abs(degrees[j] - startDegree);
+            if (diff > 10) {
+                retVal = j;
+                break;
+            }
         }
-        return -1;
+        return retVal;
     }
 
     private float averageIntensity() {
