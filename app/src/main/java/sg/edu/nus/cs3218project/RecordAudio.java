@@ -1,17 +1,15 @@
 package sg.edu.nus.cs3218project;
 
 import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Reem on 2016-04-14.
  */
 public class RecordAudio{
-    private MediaRecorder mRecorder;
     private File outputDir = CamcorderView.outputDir;
     public static String outputFilename = "audio.mp4";
     public static long startTime;
@@ -23,24 +21,12 @@ public class RecordAudio{
     public  static short[]  buffer;
     public  static int      bufferSize;
     private long startTimeStamp;
-    public static long endTimeStamp;
+    public static long endTimeStamp = 0;
+    public boolean runFlag = false;
+    public static ArrayList<short[]> samples;
 
     public RecordAudio(){
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
-        File outputFile = new File(outputDir, outputFilename);
-        mRecorder.setOutputFile(outputFile.getAbsolutePath());
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
-        try {
-            mRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.e("IllegalStateException", e.toString());
-        } catch (IOException e) {
-            Log.e("IOException", e.toString());
-        }
     }
 
     public void start(){
@@ -55,8 +41,8 @@ public class RecordAudio{
         bufferSize = AudioRecord.getMinBufferSize(FS, nChannels, audioEncoding);
         buffer = new short[bufferSize];
 
-        mRecorder.start();
         audioRecord.startRecording();
+        runFlag = true;
 
 
 
@@ -68,9 +54,10 @@ public class RecordAudio{
                 int firstAmpSum = 0;
                 int lastAmpSum;
 
-                while (true) {
+                while (runFlag) {
                     audioRecord.read(buffer, 0, bufferSize);
-                    if(firstFlag){
+                    samples.add(buffer);
+                    /*if(firstFlag){
                         for(int i = 0; i < bufferSize; i++){
                             firstAmpSum += Math.abs(buffer[i]);
 
@@ -87,9 +74,9 @@ public class RecordAudio{
                         lastAmpSum = lastAmpSum/bufferSize;
 
                         if(lastAmpSum > firstAmpSum * 10){
-                            endTimeStamp = startTimeStamp - System.currentTimeMillis();
+                            endTimeStamp = System.currentTimeMillis() - startTimeStamp;
                         }
-                    }
+                    }*/
                 }
             }
         };
@@ -99,8 +86,11 @@ public class RecordAudio{
     }
 
     public void stop() {
-        mRecorder.reset();
-        recordingThread.stop();
+        runFlag = false;
+        try {
+            recordingThread.join();
+        }
+        catch(InterruptedException e){};
         audioRecord.stop();
         audioRecord.release();
     }
