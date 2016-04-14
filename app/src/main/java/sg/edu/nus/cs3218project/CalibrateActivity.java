@@ -73,8 +73,8 @@ public class CalibrateActivity extends Activity {
         for (int j = 0; j < size; j++){
             if(compassHistory.get(j).getDegree() < minDegree)
                 minDegree = compassHistory.get(j).getDegree();
-            else if(compassHistory.get(j).getDegree() > minDegree)
-                minDegree = compassHistory.get(j).getDegree();
+            else if(compassHistory.get(j).getDegree() > maxDegree)
+                maxDegree = compassHistory.get(j).getDegree();
         }
         boolean cycleFlag = false;
         // If jumps detected, add 360 to all negative numbers, to start the cycle half way through
