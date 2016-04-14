@@ -39,11 +39,12 @@ public class PlaybackFragment extends Fragment implements View.OnClickListener{
     }
 
     public void onClick(View view) {
-        videoView.start();
         Calendar c = Calendar.getInstance();
         long time = System.currentTimeMillis();
         ((PlaybackFragmentActivity)getActivity()).setStartTime(time);
         ((PlaybackFragmentActivity)getActivity()).startPlaying();
+
+        videoView.start();
 
 
 

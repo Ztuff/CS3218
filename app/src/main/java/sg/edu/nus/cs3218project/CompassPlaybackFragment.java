@@ -55,16 +55,16 @@ public class CompassPlaybackFragment extends Fragment {
         int i = 0;
         //the time when the video started recording, plus the difference between now and then, minus the times of the first frame
 
-        long timeDifference = startTime + (System.currentTimeMillis() - startTime) - compassHistory.get(0).getTime() - CalibrateActivity.delay;
-
         while(i != compassHistory.size()){
             Frame currentFrame = compassHistory.get(i);
-            long frameTime = currentFrame.getTime();
+            long frameTime = currentFrame.getTime();//The time between when the video started recording and when the degree was stored
             final int degree = currentFrame.getDegree();
             final String direction = currentFrame.getDirection();
-            System.out.println("Start time " + startTime + " System time " + System.currentTimeMillis() + "    History Time" + (currentFrame.getTime() + timeDifference));
-            long timeDelay = frameTime + timeDifference - System.currentTimeMillis();
-            System.out.println("Waiting: " + timeDelay);
+
+
+            //System.out.println("Start time " + startTime + " System time " + System.currentTimeMillis() + "    History Time  " + (currentFrame.getTime() + timeDifference) + "   original Time  " + frameTime +  "    Degree " + degree);
+            long timeDelay = frameTime - CalibrateActivity.delay;
+            //System.out.println("Waiting: " + timeDelay);
             final Runnable setTextRunnable = new Runnable() {
                 @Override
                 public void run() {
