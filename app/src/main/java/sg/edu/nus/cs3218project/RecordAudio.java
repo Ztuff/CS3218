@@ -100,7 +100,11 @@ public class RecordAudio{
 
     public void stop() {
         mRecorder.reset();
-        recordingThread.stop();
+        try {
+            recordingThread.stop();
+        }
+        catch(Exception e){
+        }
         audioRecord.stop();
         audioRecord.release();
     }
