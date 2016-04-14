@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CalibrateActivity extends Activity {
-    private int[] amplitudes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +63,10 @@ public class CalibrateActivity extends Activity {
         Toast.makeText(getApplicationContext(), "Calibration event found in video at " + time + ", where an average color intensity of " + avg + "/255 was measured", Toast.LENGTH_LONG).show();
     }
 
-    private String formatTimeMs(long i) {
-        long ms = i % 1000;
-        long s = (i / 1000) % 60;
-        long m = (i / (1000 * 60)) % 60;
+    private String formatTimeMs(long totMs) {
+        long ms = totMs % 1000;
+        long s = (totMs / 1000) % 60;
+        long m = (totMs / (1000 * 60)) % 60;
         return String.format("%02d:%02d:%03d", m, s, ms);
     }
 
@@ -179,12 +178,14 @@ public class CalibrateActivity extends Activity {
             error = 1;
             return null;
         }
+        Bitmap frame;
         if(Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) > timeMs)
-            return retriever.getFrameAtTime(timeMs * 1000);
+            frame = retriever.getFrameAtTime(timeMs * 1000);
         else {
             error = 2;
-            return null;
+            frame = null;
         }
+        return frame;
     }
 
     public void btn_video_audio(View view) {
@@ -206,10 +207,10 @@ public class CalibrateActivity extends Activity {
             first5 += averages.get(j);
         }
         int startAmp = first5/5;
-        int ms = -1;
+        long ms = -1;
         for (int j = 6; j < averages.size(); j++){
             if(averages.get(j) > startAmp * 10){
-                ms = j * 100;
+                ms = j * 10;
                 break;
             }
         }
@@ -218,7 +219,7 @@ public class CalibrateActivity extends Activity {
         }
         else{
             audioDelay = ms - i;
-            Toast.makeText(getApplicationContext(), "Calibration event found in audio at " + ms + "ms, where an amplitude of " + averages.get(ms/100) + " was measured", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Calibration event found in audio at " + ms + "ms, where an amplitude of " + formatTimeMs(ms) + " was measured. Delay: " + audioDelay + "ms\"", Toast.LENGTH_LONG).show();
         }
     }
 }
