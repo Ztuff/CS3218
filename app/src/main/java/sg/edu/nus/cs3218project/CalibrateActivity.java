@@ -18,7 +18,8 @@ public class CalibrateActivity extends Activity {
         setContentView(R.layout.activity_calibrate);
     }
     int error = 0;
-    public static long delay = 0;
+    public static long compassDelay = 0;
+    public static long audioDelay = 0;
     long i;
     int sensitivity = 20;
 
@@ -76,7 +77,7 @@ public class CalibrateActivity extends Activity {
             else if(compassHistory.get(j).getDegree() > maxDegree)
                 maxDegree = compassHistory.get(j).getDegree();
         }
-        
+
         // If jumps detected, add 360 to all negative numbers, to start the cycle half way through
         if(minDegree < -90 && maxDegree > 90)
         {
