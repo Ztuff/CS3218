@@ -18,13 +18,14 @@ public class CalibrateActivity extends Activity {
     }
     int error = 0;
     public static long delay;
+    long i;
 
     public void btn_video_compass(View view) {
         float averageIntensity = 256;
-        long i = -1000;
+        i = -1000;
         do {
             i += 1000;
-            averageIntensity = averageIntensityForMs(i);
+            averageIntensity = averageIntensity();
         } while (averageIntensity < 128);
 
         if(error == 1) {
@@ -62,40 +63,57 @@ public class CalibrateActivity extends Activity {
     }
 
     private int compassEventFrame() {
-        ArrayList<Frame> compassHistory = MainActivity.getCompassHistory();
-        int minDegree = 180, maxDegree = -180, startDegree = compassHistory.get(0).getDegree();
-        for (int i = 0; i < compassHistory.size(); i++){
+        // Pass by value, not by reference
+        ArrayList<Frame> compassHistory = new ArrayList<>(MainActivity.getCompassHistory());
+        int size = compassHistory.size();
+       int minDegree = 180, maxDegree = -180, startDegree = compassHistory.get(0).getDegree();
+        // Check for jumps between -180 and 180
+        for (int i = 0; i < size; i++){
             if(compassHistory.get(i).getDegree() < minDegree)
                 minDegree = compassHistory.get(i).getDegree();
             else if(compassHistory.get(i).getDegree() > minDegree)
                 minDegree = compassHistory.get(i).getDegree();
         }
+        // If jumps detected, add 360 to all negative numbers, to start the cycle half way through
         if(minDegree < -90 && maxDegree > 90)
         {
-            for (int i = 0; i < compassHistory.size(); i++) {
+            for (int i = 0; i < size; i++) {
                 Frame frame = compassHistory.get(i);
                 if(frame.getDegree() < 0)
                     compassHistory.set(i, new Frame(frame.getDirection(), frame.getDegree() + 360, frame.getTime()));
             }
-            minDegree = 360;
-            maxDegree = 0;
-            startDegree = compassHistory.get(0).getDegree();
-            for (int i = 0; i < compassHistory.size(); i++){
-                if (compassHistory.get(i).getDegree() < minDegree)
-                    minDegree = compassHistory.get(i).getDegree();
-                else if(compassHistory.get(i).getDegree() > minDegree)
-                    minDegree = compassHistory.get(i).getDegree();
-            }
         }
+        // Smooth out the results by making them an average of the closest five samples
+        int[] degrees = new int[size];
+        for (int i = 0; i < size; i++){
+            int deg1 = i - 2 < 0 ? compassHistory.get(i).getDegree() : compassHistory.get(i - 2).getDegree();
+            int deg2 = i - 1 < 0 ? compassHistory.get(i).getDegree() : compassHistory.get(i - 1).getDegree();
+            int deg3 = compassHistory.get(i).getDegree();
+            int deg4 = i + 1 >= size ? compassHistory.get(i).getDegree() : compassHistory.get(i + 1).getDegree();
+            int deg5 = i + 2 >= size ? compassHistory.get(i).getDegree() : compassHistory.get(i + 2).getDegree();
+            degrees[i] = (deg1 + deg2 + deg3 + deg4 + deg5)/5;
+        }
+
+        // Get degree extremes again
+        minDegree = 360;
+        maxDegree = -180;
+        startDegree = degrees[0];
+        for (int i = 0; i < size; i++){
+            if (degrees[i] < minDegree)
+                minDegree = degrees[i];
+            else if(degrees[i] > maxDegree)
+                maxDegree = degrees[i];
+        }
+
         int diff = maxDegree - minDegree;
-        for (int i = 0; i < compassHistory.size(); i++){
-            if (Math.abs(compassHistory.get(i).getDegree() - startDegree) > diff)
+        for (int i = 0; i < size; i++){
+            if (Math.abs(degrees[i] - startDegree) > diff / 2)
                 return i;
         }
         return -1;
     }
 
-    private float averageIntensityForMs(long i) {
+    private float averageIntensity() {
         Bitmap frame = getFrameAtTime(i);
         if(frame == null)
             return 256;

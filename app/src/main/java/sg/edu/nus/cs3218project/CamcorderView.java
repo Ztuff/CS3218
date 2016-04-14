@@ -74,6 +74,7 @@ public class CamcorderView extends SurfaceView implements
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         stop();
+        mCamera.release();
     }
 
     @Override
